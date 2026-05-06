@@ -29,7 +29,7 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 export const registerUser = asyncHandler(async (req, res) => {
-  const { username, email, password } = req.body;
+  const { username, email, password, role } = req.body;
 
   const existedUser = await userModel.findOne({
     $or: [{ username }, { email }],
@@ -43,6 +43,7 @@ export const registerUser = asyncHandler(async (req, res) => {
     email,
     username,
     password,
+    role,
     isEmailVerified: false,
   });
 
@@ -56,22 +57,22 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   await user.save({ validationBeforeSave: false });
 
-  await sendMail({
+  sendMail({
     email: user?.email,
-    subject: "Please verify your email",
+    subject: "verify Email",
     mailgenContent: emailVerificationMailgenContent(
       user.username,
       `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
     ),
-  });
+  }).catch(console.error);
 
-  const creaetdUser = await userModel
+  const createdUser = await userModel
     .findById(user._id)
     .select(
       "-password -refreshToken -emailVerificationToken -emailVerificationExpiry",
     );
 
-  if (!creaetdUser) {
+  if (!createdUser) {
     throw new ApiError(500, "Something went wrong while registering a user");
   }
 
@@ -79,9 +80,14 @@ export const registerUser = asyncHandler(async (req, res) => {
     new ApiResponse(
       201,
       {
-        user: creaetdUser,
+        user: createdUser,
       },
       "User registered successfully and verification email has been sent on your email",
     ),
   );
+});
+
+
+export const loginUser = asyncHandler(async(req,res) => {
+
 });

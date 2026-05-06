@@ -25,6 +25,6 @@ app.get("/", (req, res) => {
 
 // import the routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
-app.use('/api/v1/auth', userRouter);
+app.use("/api/v1/auth", userRouter);
 
 export default app;
