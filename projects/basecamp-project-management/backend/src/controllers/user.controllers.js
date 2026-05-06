@@ -95,7 +95,7 @@ export const loginUser = asyncHandler(async (req, res) => {
   }
 
   const user = await userModel.findOne({
-    email
+    email,
   });
 
   if (!user) {
@@ -139,3 +139,27 @@ export const loginUser = asyncHandler(async (req, res) => {
     );
 });
 
+export const logoutUser = asyncHandler(async (req, res) => {
+  await userModel.findByIdAndUpdate(
+    req.user._id,
+    {
+      $set: {
+        refreshToken: "",
+      },
+    },
+    {
+      returnDocument: "after",
+    },
+  );
+
+  const cookieOptions = {
+    httpOnly: true,
+    secure: true,
+  };
+
+  return res
+    .status(200)
+    .clearCookie("accessToken", cookieOptions)
+    .clearCookie("refreshToken", cookieOptions)
+    .json(new ApiResponse(200, {}, "User logged out"));
+});
