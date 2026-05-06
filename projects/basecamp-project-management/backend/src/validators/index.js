@@ -25,14 +25,23 @@ export const userRegisterValidator = () => {
       .isLength({ min: 6 })
       .withMessage("Password must be atleast 6 characters long")
       .isString(),
-    body("fullname")
-      .optional()
-      .trim(),
+    body("fullname").optional().trim(),
   ];
 };
 
 export const userLoginValidator = () => {
-    return [
-        
-    ]
-}
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required")
+      .isString()
+      .isEmail()
+      .withMessage("Email is invalid"),
+    body("password")
+      .trim()
+      .isString()
+      .isLength({ min: 6 })
+      .withMessage("Enter a valid password"),
+  ];
+};
