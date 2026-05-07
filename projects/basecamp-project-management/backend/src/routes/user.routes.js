@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { loginUser, logoutUser, registerUser } from "../controllers/user.controllers.js";
+import { getCurrentUser, loginUser, logoutUser, registerUser } from "../controllers/user.controllers.js";
 import {
   userLoginValidator,
   userRegisterValidator,
@@ -14,5 +14,6 @@ userRouter.post("/login", userLoginValidator(), validate, loginUser);
 
 // protected routes
 userRouter.post("/logout", verifyJWT, logoutUser);
+userRouter.get("/user", verifyJWT, getCurrentUser);
 
 export default userRouter;
