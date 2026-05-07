@@ -296,3 +296,24 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   }
 });
 
+export const forgotPassword = asyncHandler(async(req,res) => {
+  const {email} = req.body;
+
+  const user = await userModel.findOne({email});
+
+  if(!user) {
+    throw new ApiError(404, "User does not exists", []);
+  }
+
+  const { unHashedToken, hashedToken, tokenExpiry } =
+    user.generateTemporaryToken();
+
+    user.forgotPasswordToken = hashedToken;
+    user.forgotPasswordExpiry = tokenExpiry;
+
+    await user.save({validateBeforeSave: true});
+
+    await sendMail({
+      
+    });
+});
