@@ -45,3 +45,45 @@ export const userLoginValidator = () => {
       .withMessage("Enter a valid password"),
   ];
 };
+
+export const userChangeCurrentPasswordValidator = () => {
+  return [
+    body("oldPassword")
+      .trim()
+      .notEmpty()
+      .withMessage("Old password is required")
+      .isString()
+      .isLength({ min: 6 })
+      .withMessage("Old password is not valid"),
+    body("newPassword")
+      .trim()
+      .notEmpty()
+      .withMessage("New password is required")
+      .isString()
+      .isLength({ min: 6 })
+      .withMessage("Password must be atleast 6 characters long"),
+  ];
+};
+
+export const userForgotPasswordValidator = () => {
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("Email is required")
+      .isEmail()
+      .withMessage("Email is invalid"),
+  ];
+};
+
+export const userResetForgotPassword = () => {
+  return [
+    body("newPassword")
+      .trim()
+      .notEmpty()
+      .withMessage("New password is required")
+      .isString()
+      .isLength({ min: 6 })
+      .withMessage("Password must be atleast 6 characters long"),
+  ];
+};
