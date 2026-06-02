@@ -87,3 +87,24 @@ export const userResetForgotPassword = () => {
       .withMessage("Password must be atleast 6 characters long"),
   ];
 };
+
+export const createNewProjectValidator = () => {
+  return [
+    body("name")
+      .trim()
+      .isString()
+      .withMessage("Project name must be in String")
+      .notEmpty()
+      .withMessage("Project name is required")
+      .isLength({ min: 3 })
+      .withMessage("Project name must be atleast 3 characters long"),
+    body("decsription")
+      .trim()
+      .isString()
+      .withMessage("Description must be a String")
+      .notEmpty()
+      .withMessage("Description is required")
+      .isLength({ min: 6 })
+      .withMessage("Description must be atleast 6 characters long"),
+  ];
+};

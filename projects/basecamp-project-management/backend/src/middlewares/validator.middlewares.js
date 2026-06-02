@@ -16,5 +16,18 @@ export const validate = (req, res, next) => {
   );
 
   throw new ApiError(402, "Received data is not valid", extractedErrors);
-  
+};
+
+export const projectValidation = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (errors.isEmpty()) {
+    return next();
+  }
+
+  const extractedErrors = [];
+
+  errors.array().map((err) => extractedErrors.push({ [err.path]: err.msg }));
+
+  throw new ApiError(402, "Received data is not valid", extractedErrors);
 };
