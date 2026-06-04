@@ -21,3 +21,10 @@ export const getUserProjects = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, projects, ""));
 });
+
+export const deleleProject = asyncHandler(async (req, res) => {
+  const user = req.user;
+  const { projectId } = req.params;
+  await projectModel.findByIdAndDelete(projectId);
+  return res.status(200).json(ApiResponse(200, [], "project deleted"));
+});
