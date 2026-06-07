@@ -103,6 +103,15 @@ export const registerUser = asyncHandler(async (req, res) => {
   );
 });
 
+/**
+ * take data from user
+ * validate
+ * if user exists
+ * if password is correct
+ * generate tokens
+ * send tokens in cookies
+ * send response
+ */
 export const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
