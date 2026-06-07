@@ -4,7 +4,7 @@ import { asyncHandler } from "../utils/async-handler.js";
 import {
   emailVerificationMailgenContent,
   forgotPasswordMailgenContent,
-  sendMail,
+  sendEmail,
 } from "../utils/mail.js";
 import { ApiResponse } from "../utils/api-response.js";
 import crypto from "crypto";
@@ -34,6 +34,16 @@ const generateAccessAndRefreshTokens = async (userId) => {
   }
 };
 
+
+
+/**
+ * Register
+ *  - take some data
+ *  - validate the data
+ *  - check in DB if user already exists
+ *  - SAVED the new user 
+ *  - user verification => email
+ */
 export const registerUser = asyncHandler(async (req, res) => {
   const { username, email, password, role } = req.body;
 
@@ -63,12 +73,12 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   await user.save({ validationBeforeSave: false });
 
-  sendMail({
+  sendEmail({
     email: user?.email,
     subject: "verify Email",
     mailgenContent: emailVerificationMailgenContent(
       user.username,
-      `${req.protocol}://${req.get("host")}/api/v1/users/verify-email/${unHashedToken}`,
+      `${req.protocol}://${req.get("host")}/api/v1/auth/verify-email/${unHashedToken}`,
     ),
   }).catch(console.error);
 

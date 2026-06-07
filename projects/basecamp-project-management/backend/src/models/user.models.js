@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
         localPath: String,
       },
       default: {
-        url: `https://placehold.co/400x400`,
+        url: `https://placehold.co/200x200`,
         localPath: "",
       },
     },
@@ -105,7 +105,7 @@ userSchema.methods.generateTemporaryToken = function () {
     .digest("hex");
 
   const tokenExpiry = Date.now() + 20 * 60 * 1000; // 20 Minutes
-
+  
   return {
     unHashedToken,
     hashedToken,

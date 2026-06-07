@@ -26,6 +26,7 @@ export const userRegisterValidator = () => {
       .withMessage("Password must be atleast 6 characters long")
       .isString(),
     body("fullname").optional().trim(),
+    body("role").trim().isString().isLength({ min: 4 }).optional(),
   ];
 };
 

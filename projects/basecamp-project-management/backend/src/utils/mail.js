@@ -1,14 +1,17 @@
 import Mailgen from "mailgen";
 import nodemailer from "nodemailer";
 
-const sendMail = async (options) => {
+// 2. send an email
+const sendEmail = async (options) => {
   const mailGenerator = new Mailgen({
     theme: "default",
     product: {
       name: "Task Manager",
-      link: "https://taskmanagerlink.com",
+      // link: "https://taskmanagerlink.com",
+      link: "http://localhost:3000/",
     },
   });
+
 
   const emailTextual = mailGenerator.generatePlaintext(options.mailgenContent);
   const emailHtml = mailGenerator.generate(options.mailgenContent);
@@ -37,6 +40,7 @@ const sendMail = async (options) => {
   }
 };
 
+// 1. prepare the content
 const emailVerificationMailgenContent = (username, verificationUrl) => {
   return {
     body: {
@@ -80,5 +84,5 @@ const forgotPasswordMailgenContent = (username, passwordResetUrl) => {
 export {
   emailVerificationMailgenContent,
   forgotPasswordMailgenContent,
-  sendMail,
+  sendEmail,
 };
