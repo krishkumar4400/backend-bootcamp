@@ -51,6 +51,10 @@ userRouter.post(
   validate,
   changeCurrentPassword,
 );
-userRouter.post('/resend-email-verification', verifyJWT, resendEmailVerification);
+userRouter.post(
+  "/resend-email-verification",
+  verifyJWT,
+  resendEmailVerification,
+);
 
 export default userRouter;

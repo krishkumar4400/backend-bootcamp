@@ -2,14 +2,16 @@ import mongoose, { model, Schema } from "mongoose";
 
 const projectSchema = new Schema(
   {
-    userId: {
-      type: mongoose.model.Schema.id,
+    createdBy: {
+      type: Schema.Types.ObjectId,
       required: true,
       ref: "User",
     },
     projectName: {
       type: String,
       required: true,
+      unique: true,
+      trim: true
     },
     description: {
       type: String,

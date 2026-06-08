@@ -347,7 +347,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {},
-        "Password reset mail has been sent on your mail id",
+        "Password reset mail has been sent on your Email id",
       ),
     );
 });
