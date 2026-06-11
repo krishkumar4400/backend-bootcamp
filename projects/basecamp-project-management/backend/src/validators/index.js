@@ -109,3 +109,22 @@ export const createNewProjectValidator = () => {
       .withMessage("Description must be atleast 6 characters long"),
   ];
 };
+
+export const updateProjectValidator = () => {
+  return [
+    body("name").optional().trim().isString().isLength({ min: 3 }),
+    body("description").optional().trim().isString().isLength({ min: 3 }),
+  ];
+};
+
+export const addMemberToProjectValidator = () => {
+  return [
+    body("email").notEmpty().trim().isEmail().isString().isLength({ min: 5 }),
+    body("role").notEmpty().trim().isLength({ min: 3 }).isString(),
+  ];
+};
+
+export const updateProjectMemberRoleValidator = () => {
+  return [body("newRole").notEmpty().trim().isLength({ min: 4 }).isString()];
+};
+
