@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
-    fullname: { type: String, trim: true },
+    fullName: { type: String, trim: true },
     role: { type: String, enum: ["user", "admin", "manager"], default: "user" },
 
     password: { type: String, required: [true, "Password is required"] },
