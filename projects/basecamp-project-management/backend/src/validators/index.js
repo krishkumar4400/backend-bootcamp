@@ -1,4 +1,5 @@
 import { body } from "express-validator";
+import { AvailableUserRole } from "../utils/constants.js";
 
 export const userRegisterValidator = () => {
   return [
@@ -120,11 +121,22 @@ export const updateProjectValidator = () => {
 export const addMemberToProjectValidator = () => {
   return [
     body("email").notEmpty().trim().isEmail().isString().isLength({ min: 5 }),
-    body("role").notEmpty().trim().isLength({ min: 3 }).isString(),
+    body("role")
+      .notEmpty()
+      .trim()
+      .isLength({ min: 3 })
+      .isString()
+      .isIn(AvailableUserRole),
   ];
 };
 
 export const updateProjectMemberRoleValidator = () => {
-  return [body("newRole").notEmpty().trim().isLength({ min: 4 }).isString()];
+  return [
+    body("newRole")
+      .notEmpty()
+      .trim()
+      .isLength({ min: 4 })
+      .isString()
+      .isIn(AvailableUserRole),
+  ];
 };
-

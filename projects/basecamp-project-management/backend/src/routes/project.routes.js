@@ -15,51 +15,56 @@ import {
   addMemberToProjectValidator,
   createNewProjectValidator,
   updateProjectValidator,
+  updateProjectMemberRoleValidator,
 } from "../validators/index.js";
 import {
   projectValidation,
-  validate,
+  
 } from "../middlewares/validator.middlewares.js";
+import { validateProjectPermission } from "../middlewares/project.middlewares.js";
+import { AvailableUserRole, UserRolesEnum } from "../utils/constants.js";
 
 const projectRouter = Router();
 
-projectRouter.post(
-  "/",
-  verifyJWT,
-  createNewProjectValidator(),
-  projectValidation,
-  createProject,
-);
+projectRouter.use(verifyJWT);
 
-projectRouter.get("/projects", verifyJWT, getProjects);
+projectRouter
+  .route("/")
+  .post(createNewProjectValidator(), projectValidation, createProject)
+  .get(getProjects);
 
-projectRouter.get("/projects/:projectId", verifyJWT, getProjectById);
+projectRouter
+  .route("/:projectId")
+  .get(validateProjectPermission(AvailableUserRole), getProjectById)
+  .patch(
+    validateProjectPermission([UserRolesEnum.ADMIN]),
+    updateProjectValidator(),
+    projectValidation,
+    updateProject,
+  )
+  .delete(validateProjectPermission([UserRolesEnum.ADMIN]), deleteProject);
 
-projectRouter.patch(
-  "/project/:projectId",
-  updateProjectValidator(),
-  projectValidation,
-  verifyJWT,
-  updateProject,
-);
+projectRouter
+  .route("/:projectId/members")
+  .post(
+    validateProjectPermission([UserRolesEnum.ADMIN]),
+    addMemberToProjectValidator(),
+    projectValidation,
+    addMembersToProject,
+  )
+  .get(getProjectMembers);
 
-projectRouter.delete("/project/:projectId", verifyJWT, deleteProject);
-
-projectRouter.post(
-  "project/:projectId",
-  verifyJWT,
-  addMemberToProjectValidator(),
-  projectValidation,
-  addMembersToProject,
-);
-
-projectRouter.get("/project/:projectId", verifyJWT, getProjectMembers);
-
-projectRouter.patch(
-  "/projects/:projectId/:userId",
-  verifyJWT,
-  updateProjectMemberRole,
-);
-projectRouter.delete("/projects/:projectId/:userId", verifyJWT, deleteMember);
+projectRouter
+  .route("/:projectId/members/:userId")
+  .patch(
+    validateProjectPermission([
+      UserRolesEnum.ADMIN,
+      UserRolesEnum.PROJECT_ADMIN,
+    ]),
+    updateProjectMemberRoleValidator(),
+    projectValidation,
+    updateProjectMemberRole,
+  )
+  .delete(validateProjectPermission([UserRolesEnum.ADMIN]), deleteMember);
 
 export default projectRouter;
