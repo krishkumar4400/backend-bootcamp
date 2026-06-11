@@ -32,14 +32,79 @@ const getTaskById = asyncHandler(async (req, res) => {
   if (!taskId) {
     throw new ApiError(400, "Task id is missing");
   }
-  const task = await taskModel.findById(taskId);
-  if (!task) {
+  const task = await taskModel.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(taskId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "assignedTo",
+        foreignField: "_id",
+        as: "assignedTo",
+        pipeline: [
+          {
+            _id: 1,
+            username: 1,
+            fullName: 1,
+            avatar: 1,
+          },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "subtasks",
+        localField: "_id",
+        foreignField: "task",
+        as: "subTasks",
+        pipeline: [
+          {
+            $lookup: {
+              from: "users",
+              localField: "createdBy",
+              foreignField: "_id",
+              as: "createdBy",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    username: 1,
+                    fullName: 1,
+                    avatar: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              createdBy: {
+                $arrayElemAt: ["$createdBy", 0],
+              },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $addFields: {
+        assignedTo: {
+          $arrayElemAt: ["$assignedTo", 0],
+        },
+      },
+    },
+  ]);
+
+  if (!task || task.length === 0) {
     throw new ApiError(404, "Task not found");
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, task, "Task fetched successfully"));
+    .json(new ApiResponse(200, task[0], "Task fetched successfully"));
 });
 
 const createTask = asyncHandler(async (req, res) => {
